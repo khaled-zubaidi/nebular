@@ -14,12 +14,14 @@ import {
   AfterViewInit,
   Inject,
   DoCheck,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { takeWhile, filter, map } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil, filter, map } from 'rxjs/operators';
 import { NbMenuInternalService, NbMenuItem, NbMenuBag, NbMenuService } from './menu.service';
-import { convertToBoolProperty } from '../helpers';
+import { convertToBoolProperty, NbBooleanInput } from '../helpers';
 import { NB_WINDOW } from '../../theme.options';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NbLayoutDirectionService } from '../../services/direction.service';
@@ -48,7 +50,7 @@ export class NbMenuItemComponent implements DoCheck, AfterViewInit, OnDestroy {
   @Output() selectItem = new EventEmitter<any>();
   @Output() itemClick = new EventEmitter<any>();
 
-  protected alive = true;
+  protected destroy$ = new Subject<void>();
   toggleState: NbToggleStates;
 
   constructor(protected menuService: NbMenuService,
@@ -61,15 +63,16 @@ export class NbMenuItemComponent implements DoCheck, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.menuService.onSubmenuToggle()
       .pipe(
-        takeWhile(() => this.alive),
         filter(({ item }) => item === this.menuItem),
         map(({ item }: NbMenuBag) => item.expanded),
+        takeUntil(this.destroy$),
       )
       .subscribe(isExpanded => this.toggleState = isExpanded ? NbToggleStates.Expanded : NbToggleStates.Collapsed);
   }
 
   ngOnDestroy() {
-    this.alive = false;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onToggleSubMenu(item: NbMenuItem) {
@@ -248,10 +251,12 @@ export class NbMenuComponent implements OnInit, AfterViewInit, OnDestroy {
     this._autoCollapse = convertToBoolProperty(value);
   }
   protected _autoCollapse: boolean = false;
+  static ngAcceptInputType_autoCollapse: NbBooleanInput;
 
-  protected alive: boolean = true;
+  protected destroy$ = new Subject<void>();
 
   constructor(@Inject(NB_WINDOW) protected window,
+              @Inject(PLATFORM_ID) protected platformId,
               protected menuInternalService: NbMenuInternalService,
               protected router: Router) {
   }
@@ -262,24 +267,24 @@ export class NbMenuComponent implements OnInit, AfterViewInit, OnDestroy {
     this.menuInternalService
       .onAddItem()
       .pipe(
-        takeWhile(() => this.alive),
         filter((data: { tag: string; items: NbMenuItem[] }) => this.compareTag(data.tag)),
+        takeUntil(this.destroy$),
       )
       .subscribe(data => this.onAddItem(data));
 
     this.menuInternalService
       .onNavigateHome()
       .pipe(
-        takeWhile(() => this.alive),
         filter((data: { tag: string; items: NbMenuItem[] }) => this.compareTag(data.tag)),
+        takeUntil(this.destroy$),
       )
       .subscribe(() => this.navigateHome());
 
     this.menuInternalService
       .onGetSelectedItem()
       .pipe(
-        takeWhile(() => this.alive),
         filter((data: { tag: string; listener: BehaviorSubject<NbMenuBag> }) => this.compareTag(data.tag)),
+        takeUntil(this.destroy$),
       )
       .subscribe((data: { tag: string; listener: BehaviorSubject<NbMenuBag> }) => {
         data.listener.next({ tag: this.tag, item: this.getSelectedItem(this.items) });
@@ -288,15 +293,15 @@ export class NbMenuComponent implements OnInit, AfterViewInit, OnDestroy {
     this.menuInternalService
       .onCollapseAll()
       .pipe(
-        takeWhile(() => this.alive),
         filter((data: { tag: string }) => this.compareTag(data.tag)),
+        takeUntil(this.destroy$),
       )
       .subscribe(() => this.collapseAll());
 
     this.router.events
       .pipe(
-        takeWhile(() => this.alive),
         filter(event => event instanceof NavigationEnd),
+        takeUntil(this.destroy$),
       )
       .subscribe(() => {
         this.menuInternalService.selectFromUrl(this.items, this.tag, this.autoCollapse);
@@ -336,7 +341,8 @@ export class NbMenuComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.alive = false;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   protected navigateHome() {
@@ -347,7 +353,7 @@ export class NbMenuComponent implements OnInit, AfterViewInit, OnDestroy {
         this.router.navigate([homeItem.link], { queryParams: homeItem.queryParams, fragment: homeItem.fragment });
       }
 
-      if (homeItem.url) {
+      if (homeItem.url && isPlatformBrowser(this.platformId)) {
         this.window.location.href = homeItem.url;
       }
     }

@@ -7,6 +7,7 @@
 import { Component, HostBinding, Input } from '@angular/core';
 
 import { NbComponentStatus } from '../component-status';
+import { emptyStatusWarning } from '../helpers';
 
 export type NbBadgePhysicalPosition = 'top left' | 'top right' | 'bottom left' | 'bottom right';
 export type NbBadgeLogicalPosition = 'top start' | 'top end' | 'bottom start' | 'bottom end';
@@ -60,6 +61,8 @@ export type NbBadgePosition = NbBadgePhysicalPosition | NbBadgeLogicalPosition;
  * badge-text-font-weight:
  * badge-text-line-height:
  * badge-padding:
+ * badge-basic-background-color:
+ * badge-basic-text-color:
  * badge-primary-background-color:
  * badge-primary-text-color:
  * badge-success-background-color:
@@ -70,6 +73,8 @@ export type NbBadgePosition = NbBadgePhysicalPosition | NbBadgeLogicalPosition;
  * badge-warning-text-color:
  * badge-danger-background-color:
  * badge-danger-text-color:
+ * badge-control-background-color:
+ * badge-control-text-color:
  */
 @Component({
   selector: 'nb-badge',
@@ -104,9 +109,20 @@ export class NbBadgeComponent {
 
   /**
    * Badge status (adds specific styles):
-   * 'primary', 'info', 'success', 'warning', 'danger'
+   * 'basic', 'primary', 'info', 'success', 'warning', 'danger', 'control'
    */
-  @Input() status: NbComponentStatus = 'primary';
+  @Input()
+  get status(): NbComponentStatus {
+    return this._status;
+  }
+  set status(value: NbComponentStatus) {
+    if ((value as string) === '') {
+      emptyStatusWarning('NbBadge');
+      value = 'basic';
+    }
+    this._status = value;
+  }
+  protected _status: NbComponentStatus = 'basic';
 
   @HostBinding('class.status-primary')
   get primary(): boolean {
@@ -131,6 +147,16 @@ export class NbBadgeComponent {
   @HostBinding('class.status-danger')
   get danger(): boolean {
     return this.status === 'danger';
+  }
+
+  @HostBinding('class.status-basic')
+  get basic(): boolean {
+    return this.status === 'basic';
+  }
+
+  @HostBinding('class.status-control')
+  get control(): boolean {
+    return this.status === 'control';
   }
 
   @HostBinding('class.position-top')

@@ -11,15 +11,16 @@ import {
   NbFlexibleConnectedPositionStrategy,
   NbOverlayPositionBuilder,
   NbOverlayRef,
-  NbPlatform,
   NbPositionStrategy,
 } from './mapping';
+import { NbPlatform } from '../platform/platform-service';
 import { NbOverlayContainerAdapter } from '../adapter/overlay-container-adapter';
 import { NbViewportRulerAdapter } from '../adapter/viewport-ruler-adapter';
 import { NbGlobalLogicalPosition } from './position-helper';
 import { GlobalPositionStrategy } from '@angular/cdk/overlay';
 
 
+export type NbAdjustmentValues = 'noop' | 'clockwise' | 'counterclockwise' | 'vertical' | 'horizontal';
 export enum NbAdjustment {
   NOOP = 'noop',
   CLOCKWISE = 'clockwise',
@@ -28,6 +29,8 @@ export enum NbAdjustment {
   HORIZONTAL = 'horizontal',
 }
 
+// tslint:disable-next-line:max-line-length
+export type NbPositionValues = 'top' | 'bottom' | 'left' | 'right' | 'start' | 'end' | 'top-end' | 'top-start' | 'bottom-end' | 'bottom-start' | 'end-top' | 'end-bottom' | 'start-top' | 'start-bottom';
 export enum NbPosition {
   TOP = 'top',
   BOTTOM = 'bottom',
@@ -209,10 +212,22 @@ export class NbAdjustableConnectedPositionStrategy
   }
 
   protected reorderPreferredPositions(positions: NbPosition[]): NbPosition[] {
-    const startPositionIndex = positions.indexOf(this._position);
+    // Physical positions should be mapped to logical as adjustments use logical positions.
+    const startPositionIndex = positions.indexOf(this.mapToLogicalPosition(this._position));
     const firstPart = positions.slice(startPositionIndex);
     const secondPart = positions.slice(0, startPositionIndex);
     return firstPart.concat(secondPart);
+  }
+
+  protected mapToLogicalPosition(position: NbPosition): NbPosition {
+    if (position === NbPosition.LEFT) {
+      return NbPosition.START;
+    }
+    if (position === NbPosition.RIGHT) {
+      return NbPosition.END;
+    }
+
+    return position;
   }
 }
 

@@ -29,6 +29,7 @@ export class PortalModule {}
 
 describe('NbAdjustableConnectedPositionStrategy', () => {
   let strategy: NbAdjustableConnectedPositionStrategy;
+  let overlayHostElement: HTMLDivElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -43,16 +44,20 @@ describe('NbAdjustableConnectedPositionStrategy', () => {
 
     // Have to create layout component as it's required for scroll service to work properly.
     // Also it registers overlay container so we don't have to create it manually.
-    TestBed.createComponent(NbLayoutComponent);
+    TestBed.createComponent(NbLayoutComponent).detectChanges();
 
-    const hostElement = document.createElement('div');
-    hostElement.style.width = '10px';
-    hostElement.style.height = '10px';
-    hostElement.style.backgroundColor = 'red';
-    document.body.appendChild(hostElement);
+    overlayHostElement = document.createElement('div');
+    overlayHostElement.style.width = '10px';
+    overlayHostElement.style.height = '10px';
+    overlayHostElement.style.backgroundColor = 'red';
+    document.body.appendChild(overlayHostElement);
 
-    const positionBuilderService: NbPositionBuilderService = TestBed.get(NbPositionBuilderService);
-    strategy = positionBuilderService.connectedTo({ nativeElement: hostElement });
+    const positionBuilderService: NbPositionBuilderService = TestBed.inject(NbPositionBuilderService);
+    strategy = positionBuilderService.connectedTo({ nativeElement: overlayHostElement });
+  });
+
+  afterEach(() => {
+    overlayHostElement.parentElement.removeChild(overlayHostElement);
   });
 
   it('should create strategy with position start and adjustment noop', () => {
@@ -60,7 +65,7 @@ describe('NbAdjustableConnectedPositionStrategy', () => {
 
     strategy.position(NbPosition.START).adjustment(NbAdjustment.NOOP);
 
-    const overlayService: NbOverlayService = TestBed.get(NbOverlayService);
+    const overlayService: NbOverlayService = TestBed.inject(NbOverlayService);
     const overlayRef = overlayService.create({ positionStrategy: strategy });
     overlayRef.attach(new NbComponentPortal(PortalComponent));
 
@@ -79,7 +84,7 @@ describe('NbAdjustableConnectedPositionStrategy', () => {
 
     strategy.position(NbPosition.END).adjustment(NbAdjustment.NOOP);
 
-    const overlayService: NbOverlayService = TestBed.get(NbOverlayService);
+    const overlayService: NbOverlayService = TestBed.inject(NbOverlayService);
     const overlayRef = overlayService.create({ positionStrategy: strategy });
     overlayRef.attach(new NbComponentPortal(PortalComponent));
 
@@ -98,7 +103,7 @@ describe('NbAdjustableConnectedPositionStrategy', () => {
 
     strategy.position(NbPosition.START).adjustment(NbAdjustment.CLOCKWISE);
 
-    const overlayService: NbOverlayService = TestBed.get(NbOverlayService);
+    const overlayService: NbOverlayService = TestBed.inject(NbOverlayService);
     const overlayRef = overlayService.create({ positionStrategy: strategy });
     overlayRef.attach(new NbComponentPortal(PortalComponent));
 
@@ -115,6 +120,36 @@ describe('NbAdjustableConnectedPositionStrategy', () => {
       { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top', offsetY: 15 },
       { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 15 },
       { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 15 },
+    ]));
+  });
+
+  it('should map left position to start', () => {
+    const withPositionsSpy = spyOn(strategy, 'withPositions').and.callThrough();
+
+    strategy.position(NbPosition.LEFT).adjustment(NbAdjustment.HORIZONTAL);
+
+    const overlayService: NbOverlayService = TestBed.inject(NbOverlayService);
+    const overlayRef = overlayService.create({ positionStrategy: strategy });
+    overlayRef.attach(new NbComponentPortal(PortalComponent));
+
+    expect(withPositionsSpy).toHaveBeenCalledWith(jasmine.objectContaining([
+      { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center', offsetX: -15 },
+      { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center', offsetX: 15 },
+    ]));
+  });
+
+  it('should map right position to end', () => {
+    const withPositionsSpy = spyOn(strategy, 'withPositions').and.callThrough();
+
+    strategy.position(NbPosition.RIGHT).adjustment(NbAdjustment.HORIZONTAL);
+
+    const overlayService: NbOverlayService = TestBed.inject(NbOverlayService);
+    const overlayRef = overlayService.create({ positionStrategy: strategy });
+    overlayRef.attach(new NbComponentPortal(PortalComponent));
+
+    expect(withPositionsSpy).toHaveBeenCalledWith(jasmine.objectContaining([
+      { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center', offsetX: 15 },
+      { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center', offsetX: -15 },
     ]));
   });
 });

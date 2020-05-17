@@ -14,22 +14,24 @@ import { NbMenuModule } from '../menu/menu.module';
 import { NbContextMenuDirective } from './context-menu.directive';
 import { NbContextMenuComponent } from './context-menu.component';
 import { NbContextMenuModule } from './context-menu.module';
+import { NbOverlayConfig } from '../cdk/overlay/mapping';
 
 @Component({
   selector: 'nb-context-menu-default-test',
   template: `
     <nb-layout>
       <nb-layout-column>
-        <button #button [nbContextMenu]="items">show context menu</button>
+        <button #button [nbContextMenu]="items" [nbContextMenuClass]="contextMenuClass">show context menu</button>
       </nb-layout-column>
     </nb-layout>
   `,
 })
 export class NbContextMenuDefaultTestComponent {
-  @ViewChild('button', { static: false }) button: ElementRef;
-  @ViewChild(NbContextMenuDirective, { static: false }) contextMenu: NbContextMenuDirective;
+  @ViewChild('button') button: ElementRef;
+  @ViewChild(NbContextMenuDirective) contextMenu: NbContextMenuDirective;
 
   items = [{ title: 'User' }, { title: 'Log Out' }];
+  contextMenuClass = '';
 }
 
 @Component({
@@ -48,8 +50,8 @@ export class NbContextMenuDefaultTestComponent {
   `,
 })
 export class NbContextMenuBindingsTestComponent {
-  @ViewChild(NbContextMenuDirective, { static: false }) contextMenu: NbContextMenuDirective;
-  @ViewChild('button', { static: false }) button: ElementRef;
+  @ViewChild(NbContextMenuDirective) contextMenu: NbContextMenuDirective;
+  @ViewChild('button') button: ElementRef;
   @Input() trigger = NbTrigger.CLICK;
   @Input() position = NbPosition.TOP;
   @Input() adjustment = NbAdjustment.CLOCKWISE;
@@ -70,8 +72,8 @@ export class NbContextMenuBindingsTestComponent {
   `,
 })
 export class NbContextMenuInstanceTestComponent {
-  @ViewChild(NbContextMenuDirective, { static: false }) contextMenu: NbContextMenuDirective;
-  @ViewChild('button', { static: false }) button: ElementRef;
+  @ViewChild(NbContextMenuDirective) contextMenu: NbContextMenuDirective;
+  @ViewChild('button') button: ElementRef;
 
   items = [{ title: 'User' }, { title: 'Log Out' }];
 }
@@ -92,6 +94,7 @@ export class NbDynamicOverlayHandlerMock {
   _position: NbPosition = NbPosition.TOP;
   _adjustment: NbAdjustment = NbAdjustment.NOOP;
   _offset: number;
+  _overlayConfig: NbOverlayConfig = {};
 
   constructor() {
   }
@@ -133,6 +136,11 @@ export class NbDynamicOverlayHandlerMock {
 
   offset(offset: number) {
     this._offset = offset;
+    return this;
+  }
+
+  overlayConfig(overlayConfig: NbOverlayConfig) {
+    this._overlayConfig = overlayConfig;
     return this;
   }
 
@@ -247,7 +255,7 @@ describe('Directive: NbContextMenuDirective', () => {
           ContextMenuTestModule,
         ],
       })
-        .overrideComponent(NbContextMenuDirective, {
+        .overrideDirective(NbContextMenuDirective, {
           set: {
             providers: [
               { provide: NbDynamicOverlayHandler, useValue: overlayHandler },
@@ -328,6 +336,17 @@ describe('Directive: NbContextMenuDirective', () => {
         expect(showSpy).toHaveBeenCalledTimes(1);
         expect(hideSpy).toHaveBeenCalledTimes(1);
         expect(toggleSpy).toHaveBeenCalledTimes(1);
+      });
+
+      it('should set overlay config', () => {
+        const contextMenuClass = 'custom-context-menu-class';
+        const overlayConfigSpy = spyOn(overlayHandler, 'overlayConfig').and.callThrough();
+
+        fixture = TestBed.createComponent(NbContextMenuDefaultTestComponent);
+        fixture.componentInstance.contextMenuClass = contextMenuClass;
+        fixture.detectChanges();
+
+        expect(overlayConfigSpy).toHaveBeenCalledWith(jasmine.objectContaining({panelClass: contextMenuClass}));
       });
     });
 

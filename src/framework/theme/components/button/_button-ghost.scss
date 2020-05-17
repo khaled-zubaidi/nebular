@@ -12,6 +12,11 @@
     border-width: nb-theme(button-ghost-border-width);
     text-transform: nb-theme(button-ghost-text-transform);
 
+    &:focus {
+      $inset-shadow: nb-theme(button-ghost-focus-inset-shadow-length);
+      @include nb-outline(nb-theme(button-outline-width), nb-theme(button-outline-color), $inset-shadow);
+    }
+
     @each $size in nb-get-sizes() {
       &.size-#{$size} {
         padding: nb-theme(button-ghost-#{$size}-padding);

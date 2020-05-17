@@ -5,10 +5,10 @@
  */
 
 import { Component, HostBinding, Input, OnInit, OnDestroy, ElementRef, OnChanges } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
+import { Subscription, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import { convertToBoolProperty } from '../helpers';
+import { convertToBoolProperty, NbBooleanInput } from '../helpers';
 import { NbThemeService } from '../../services/theme.service';
 import { NbMediaBreakpoint } from '../../services/breakpoints.service';
 import { NbSidebarService } from './sidebar.service';
@@ -143,7 +143,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
   protected stateValue: string;
   protected responsiveValue: boolean = false;
 
-  private alive = true;
+  private destroy$ = new Subject<void>();
 
   containerFixedValue: boolean = true;
 
@@ -178,6 +178,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
     this.startValue = false;
     this.endValue = false;
   }
+  static ngAcceptInputType_right: NbBooleanInput;
 
   /**
    * Places sidebar on the left side
@@ -190,6 +191,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
     this.startValue = false;
     this.endValue = false;
   }
+  static ngAcceptInputType_left: NbBooleanInput;
 
   /**
    * Places sidebar on the start edge of layout
@@ -202,6 +204,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
     this.leftValue = false;
     this.rightValue = false;
   }
+  static ngAcceptInputType_start: NbBooleanInput;
 
   /**
    * Places sidebar on the end edge of layout
@@ -214,6 +217,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
     this.leftValue = false;
     this.rightValue = false;
   }
+  static ngAcceptInputType_end: NbBooleanInput;
 
   /**
    * Makes sidebar fixed (shown above the layout content)
@@ -223,6 +227,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
   set fixed(val: boolean) {
     this.fixedValue = convertToBoolProperty(val);
   }
+  static ngAcceptInputType_fixed: NbBooleanInput;
 
   /**
    * Makes sidebar container fixed
@@ -232,6 +237,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
   set containerFixed(val: boolean) {
     this.containerFixedValue = convertToBoolProperty(val);
   }
+  static ngAcceptInputType_containerFixed: NbBooleanInput;
 
   /**
    * Initial sidebar state, `expanded`|`collapsed`|`compacted`
@@ -250,6 +256,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
   set responsive(val: boolean) {
     this.responsiveValue = convertToBoolProperty(val);
   }
+  static ngAcceptInputType_responsive: NbBooleanInput;
 
   /**
    * Tags a sidebar with some ID, can be later used in the sidebar service
@@ -302,7 +309,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit() {
     this.sidebarService.onToggle()
-      .pipe(takeWhile(() => this.alive))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data: { compact: boolean, tag: string }) => {
         if (!this.tag || this.tag === data.tag) {
           this.toggle(data.compact);
@@ -310,7 +317,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
       });
 
     this.sidebarService.onExpand()
-      .pipe(takeWhile(() => this.alive))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data: { tag: string }) => {
         if (!this.tag || this.tag === data.tag) {
           this.expand();
@@ -318,7 +325,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
       });
 
     this.sidebarService.onCollapse()
-      .pipe(takeWhile(() => this.alive))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data: { tag: string }) => {
         if (!this.tag || this.tag === data.tag) {
           this.collapse();
@@ -326,7 +333,7 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
       });
 
     this.sidebarService.onCompact()
-      .pipe(takeWhile(() => this.alive))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data: { tag: string }) => {
         if (!this.tag || this.tag === data.tag) {
           this.compact();
@@ -335,7 +342,8 @@ export class NbSidebarComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.alive = false;
+    this.destroy$.next();
+    this.destroy$.complete();
     if (this.mediaQuerySubscription) {
       this.mediaQuerySubscription.unsubscribe();
     }

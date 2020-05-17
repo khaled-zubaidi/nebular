@@ -1,3 +1,190 @@
+<a name="5.0.0"></a>
+# [5.0.0](https://github.com/akveo/nebular/compare/v4.6.0...v5.0.0) (2020-03-09)
+
+
+### Bug Fixes
+
+* **button link:** remove text decoration ([#2190](https://github.com/akveo/nebular/issues/2190)) ([0495259](https://github.com/akveo/nebular/commit/0495259))
+* **cdk:** fix cdk mappings duplicates ([#2068](https://github.com/akveo/nebular/issues/2068)) ([8179a02](https://github.com/akveo/nebular/commit/8179a02))
+* **focus trigger:** prevent stream destroy on focus out ([#2189](https://github.com/akveo/nebular/issues/2189)) ([42ff4ee](https://github.com/akveo/nebular/commit/42ff4ee))
+* **form field:** make form control container take all space ([#2241](https://github.com/akveo/nebular/issues/2241)) ([2e11ec9](https://github.com/akveo/nebular/commit/2e11ec9))
+* **input:** use correct status property name ([#2248](https://github.com/akveo/nebular/issues/2248)) ([737ffe2](https://github.com/akveo/nebular/commit/737ffe2))
+* **layout:** access view child property after view init ([#2249](https://github.com/akveo/nebular/issues/2249)) ([5bb21a7](https://github.com/akveo/nebular/commit/5bb21a7))
+* **menu:** prevent color override in css vars mode ([#2201](https://github.com/akveo/nebular/issues/2201)) ([ac50dae](https://github.com/akveo/nebular/commit/ac50dae))
+* **route tabset:** tab icon margin ([#2154](https://github.com/akveo/nebular/issues/2154)) ([f7210b2](https://github.com/akveo/nebular/commit/f7210b2))
+* **theme:** prevent transition to initial status ([#2256](https://github.com/akveo/nebular/issues/2256)) ([8e52fc0](https://github.com/akveo/nebular/commit/8e52fc0))
+* **trigger:** prevent stream destroy on mouse leave ([#2141](https://github.com/akveo/nebular/issues/2141)) ([7c79d1d](https://github.com/akveo/nebular/commit/7c79d1d))
+* **typography:** concat anchor selector with color class ([#2161](https://github.com/akveo/nebular/issues/2161)) ([8c9ed86](https://github.com/akveo/nebular/commit/8c9ed86))
+* **typography:** use text theme vars for text color classes ([#2192](https://github.com/akveo/nebular/issues/2192)) ([af2e674](https://github.com/akveo/nebular/commit/af2e674))
+* add scroll strategy options to public api ([#2129](https://github.com/akveo/nebular/issues/2129)) ([79ab083](https://github.com/akveo/nebular/commit/79ab083))
+* provide Nebular scroll services adapters ([#2140](https://github.com/akveo/nebular/issues/2140)) ([0e0d11c](https://github.com/akveo/nebular/commit/0e0d11c))
+* support strict template check ([#2273](https://github.com/akveo/nebular/issues/2273)) ([9b4ff5b](https://github.com/akveo/nebular/commit/9b4ff5b))
+* avoid to declare and export NbTable component ([#2126](https://github.com/akveo/nebular/issues/2126)) ([dbf5192](https://github.com/akveo/nebular/commit/dbf5192))
+
+
+### Code Refactoring
+
+* **auth:** require valid token by default ([#2259](https://github.com/akveo/nebular/issues/2259)) ([bc68d11](https://github.com/akveo/nebular/commit/bc68d11))
+* unsubscribe on destroy ([#2112](https://github.com/akveo/nebular/issues/2112)) ([0cab4fc](https://github.com/akveo/nebular/commit/0cab4fc))
+* **select:** update option state colors ([#2110](https://github.com/akveo/nebular/issues/2110)) ([1dbddd5](https://github.com/akveo/nebular/commit/1dbddd5))
+* use basic as default status ([#2136](https://github.com/akveo/nebular/issues/2136)) ([cc9b47e](https://github.com/akveo/nebular/commit/cc9b47e))
+* **mapping** unify state color mapping ([#2075](https://github.com/akveo/nebular/issues/2075)) ([028883a](https://github.com/akveo/nebular/commit/028883a))
+* **context menu** extract text alignment to theme property ([#2148](https://github.com/akveo/nebular/issues/2148)) ([011edd1](https://github.com/akveo/nebular/commit/011edd1))
+* move focus inset shadow to theme ([#2143](https://github.com/akveo/nebular/issues/2143)) ([ecafd16](https://github.com/akveo/nebular/commit/ecafd16))
+
+
+### Features
+
+* update to Angular 9 ([#2236](https://github.com/akveo/nebular/issues/2236)) ([899815f](https://github.com/akveo/nebular/commit/899815f))
+* **calendar:** Eva 1.3 ([#2120](https://github.com/akveo/nebular/issues/2120)) ([0f03fb5](https://github.com/akveo/nebular/commit/0f03fb5))
+* **select:** Eva style ([#2106](https://github.com/akveo/nebular/issues/2106)) ([7355d65](https://github.com/akveo/nebular/commit/7355d65))
+* **theme:** autocomplete component ([#1947](https://github.com/akveo/nebular/issues/1947)) ([d67dd6b](https://github.com/akveo/nebular/commit/d67dd6b))
+* **theme:** form field component ([#2238](https://github.com/akveo/nebular/issues/2238)) ([aee71a7](https://github.com/akveo/nebular/commit/aee71a7))
+* **date fns:** update date-fns to latest version ([#2045](https://github.com/akveo/nebular/issues/2045)) ([1c5323d](https://github.com/akveo/nebular/commit/1c5323d))
+* **typography:** add anchor text decoration theme property ([#2169](https://github.com/akveo/nebular/issues/2169)) ([be80661](https://github.com/akveo/nebular/commit/be80661))
+* **chat:** date format for messages and support for change placeholders ([#2227](https://github.com/akveo/nebular/issues/2227)) ([b63f004](https://github.com/akveo/nebular/commit/b63f004))
+
+
+### BREAKING CHANGES
+
+* **auth:** `requireValidToken` set to true by default.
+Now if response contains invalid token `NbAuthIllegalTokenError` is thrown.
+To enable old behavior, set `requireValidToken: false` in the auth strategy method config, e.g.:
+```
+NbPasswordAuthStrategy.setup({
+  // ...
+  login: {
+    // ...
+    requireValidToken: false,
+  },
+});
+```
+or
+```
+NbOAuth2AuthStrategy.setup({
+  // ...
+  authorize: {
+    // ...
+    requireValidToken: false,
+  },
+});
+```
+* Badge, button, progress bar, toastr components now use basic status as a default.
+* **calendar:**
+    - `NbCalendarHeaderComponent` removed. Along with that `showHeader` property removed from following components:
+    - `NbBaseCalendarComponent`
+    - `NbCalendarRangeComponent`
+    - `NbCalendarComponent`
+    - `NbBasePicker`
+    - `NbBasePickerComponent`
+
+  - `medium` and `size-medium` css classes were removed along with `medium`/`isMedium` properties from the following classes:
+    - `NbCalendarDayPickerComponent`
+    - `NbCalendarMonthPickerComponent`
+    - `NbCalendarYearPickerComponent`
+    - `NbBaseCalendarComponent`
+    - `NbCalendarWeekNumberComponent`
+
+  - Properties `date`, `changeMode`, `isRtl` removed from `NbCalendarPageableNavigationComponent`
+
+  - File `nb-calendar-week-number.component` renamed to `calendar-week-number.component`
+
+  - `YEARS_IN_VIEW, YEARS_IN_ROW` constants removed. Use `NbCalendarYearModelService`s `getYearsInView` and `getRowInView` methods.
+
+  - `NbCalendarNavigationComponent` replaced with `NbCalendarViewModeComponent`.
+
+  - `initYears` method removed from `NbCalendarYearPickerComponent`.
+
+  - `calendar-range-cells.ts` file split into `calendar-range-day-cell.component.ts`, `calendar-range-month-cell.component.ts` and `calendar-range-year-cell.component.ts`.
+
+  - Following theme properties were removed:
+    - `calendar-body-height`
+    - `calendar-header-text-color`
+    - `calendar-header-text-font-family`
+    - `calendar-header-title-text-font-size`
+    - `calendar-header-title-text-font-weight`
+    - `calendar-header-title-text-line-height`
+    - `calendar-header-sub-title-text-font-size`
+    - `calendar-header-sub-title-text-font-weight`
+    - `calendar-header-sub-title-text-line-height`
+    - `calendar-navigation-button-width`
+    - `calendar-large-body-height`
+    - `calendar-cell-in-range-background-color`
+    - `calendar-cell-disabled-background-color`
+    - `datepicker-text-color`
+    - `datepicker-arrow-size`
+* **cdk:** NbPlatform and NbScrollStrategyOptions from theme/components/cdk/overlay/mapping.ts removed. Use NbPlatform from theme/components/cdk/platform/platform-service.ts and NbScrollStrategyOptions from theme/components/cdk/adapter/block-scroll-strategy-adapter.ts.
+NbPlatformModule removed.
+* **select:** `select-option-*` theme properties renamed to `option-`. `nb-option` and `nb-option-group` components moved to own `options` directory.
+* **select:** Generic value type removed from NbSelectComponent.
+* **Angular:** Nebular packages now require Angular 9+.
+* **tslib:** We no longer have a direct dependency on tslib. Instead it is now listed a peerDependency. This matches Angular framework.
+Users not using the Angular CLI will need to manually install tslib via:
+```
+yarn add tslib
+# or
+npm install tslib --save
+```
+
+
+
+<a name="4.6.0"></a>
+# [4.6.0](https://github.com/akveo/nebular/compare/v4.5.0...v4.6.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* **auth:** use basic status instead deprecated empty string ([#2063](https://github.com/akveo/nebular/issues/2063)) ([a202468](https://github.com/akveo/nebular/commit/a202468))
+* **docs:** update links inside install guide page ([#2079](https://github.com/akveo/nebular/issues/2079)) ([cd8cd9d](https://github.com/akveo/nebular/commit/cd8cd9d))
+* **hover trigger strategy:** prevent resubscription after destroy ([#2058](https://github.com/akveo/nebular/issues/2058)) ([1e1a293](https://github.com/akveo/nebular/commit/1e1a293))
+* **nbIsGranted:** prevent subscription memory leak ([#2087](https://github.com/akveo/nebular/issues/2087)) ([2084356](https://github.com/akveo/nebular/commit/2084356))
+* **overlay:** set position when content or context update ([#2081](https://github.com/akveo/nebular/issues/2081)) ([e85830f](https://github.com/akveo/nebular/commit/e85830f))
+* **radio:** reverse order of elements in RTL ([#2093](https://github.com/akveo/nebular/issues/2093)) ([2e61d8d](https://github.com/akveo/nebular/commit/2e61d8d))
+* **select:** set value from queue when options change ([#2082](https://github.com/akveo/nebular/issues/2082)) ([c934329](https://github.com/akveo/nebular/commit/c934329))
+* **toastr:** move toastr overlay in front of other overlays ([#2078](https://github.com/akveo/nebular/issues/2078)) ([906d3c0](https://github.com/akveo/nebular/commit/906d3c0))
+* **toggle:** animation in IE11 ([#2062](https://github.com/akveo/nebular/issues/2062)) ([1d52a20](https://github.com/akveo/nebular/commit/1d52a20))
+* **toggle:** set correct ARIA role ([#2097](https://github.com/akveo/nebular/issues/2097)) ([dd5f2b6](https://github.com/akveo/nebular/commit/dd5f2b6))
+* **universal:** update dependencies to support universal enviro… ([#2057](https://github.com/akveo/nebular/issues/2057)) ([0b22c40](https://github.com/akveo/nebular/commit/0b22c40))
+
+
+### Features
+
+* **accordion:** toggle via keyboard ([#2085](https://github.com/akveo/nebular/issues/2085)) ([f8a1b32](https://github.com/akveo/nebular/commit/f8a1b32))
+* add custom css class on overlays ([#2067](https://github.com/akveo/nebular/issues/2067)) ([147ec2e](https://github.com/akveo/nebular/commit/147ec2e))
+* Ivy compatibility ([#2074](https://github.com/akveo/nebular/issues/2074)) ([d84e76b](https://github.com/akveo/nebular/commit/d84e76b))
+
+
+
+<a name="4.5.0"></a>
+# [4.5.0](https://github.com/akveo/nebular/compare/v4.4.0...v4.5.0) (2019-10-31)
+
+Highlights
+
+Nebular 4.5 introduces a new basic and control component statuses.
+Please note, some theme properties were changed. If you use Nebular Theming or have custom themes, check out [updated variables list](https://github.com/akveo/nebular/pull/2047).
+
+
+
+### Bug Fixes
+
+* **actions:** icon button alignment ([#1895](https://github.com/akveo/nebular/issues/1895)) ([04d7e33](https://github.com/akveo/nebular/commit/04d7e33))
+* **datepicker:** check trigger strategy is defined before destroying ([#2011](https://github.com/akveo/nebular/issues/2011)) ([a678e60](https://github.com/akveo/nebular/commit/a678e60))
+* scroll bar theming ([#1890](https://github.com/akveo/nebular/issues/1890)) ([e6b19a5](https://github.com/akveo/nebular/commit/e6b19a5))
+* **datepicker, radio:** always call touched callback ([#2026](https://github.com/akveo/nebular/issues/2026)) ([d3a8e44](https://github.com/akveo/nebular/commit/d3a8e44))
+* **icon:** fix NULL content render in MS Edge ([#2043](https://github.com/akveo/nebular/issues/2043)) ([f37223a](https://github.com/akveo/nebular/commit/f37223a))
+* **list:** vertically center list item content ([#1894](https://github.com/akveo/nebular/issues/1894)) ([7a179bc](https://github.com/akveo/nebular/commit/7a179bc))
+* **popover, tooltip:** convert falsy values for adjustments to noop ([#1905](https://github.com/akveo/nebular/issues/1905)) ([3ec69e7](https://github.com/akveo/nebular/commit/3ec69e7))
+* **sidebar:** emit expand event when expanded because of menu c… ([#1897](https://github.com/akveo/nebular/issues/1897)) ([a07487d](https://github.com/akveo/nebular/commit/a07487d))
+* **toastr:** dispose no longer used overlay container ([#1873](https://github.com/akveo/nebular/issues/1873)) ([4114ad1](https://github.com/akveo/nebular/commit/4114ad1))
+* **tooltip:** add angular positions classes ([#2048](https://github.com/akveo/nebular/issues/2048)) ([a15c81d](https://github.com/akveo/nebular/commit/a15c81d))
+
+
+### Features
+
+* add basic and control statuses ([#2047](https://github.com/akveo/nebular/issues/2047)) ([884dd66](https://github.com/akveo/nebular/commit/884dd66))
+
+
+
 <a name="4.4.0"></a>
 # [4.4.0](https://github.com/akveo/nebular/compare/v4.3.1...v4.4.0) (2019-10-07)
 
